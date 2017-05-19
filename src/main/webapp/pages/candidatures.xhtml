@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ph="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>    
+        <link href="../assets/application.css" rel="stylesheet" type="text/css" />
+    </h:head>
+    <h:body id="dashboard">
+
+        <div id="wrapper">
+
+            <ui:include src="navigation.xhtml" /> 
+
+            <div id="content">
+
+                <div class="menubar">
+                    <div class="sidebar-toggler visible-xs">
+                        <i class="ion-navicon"></i>
+                    </div>
+
+                    <div class="page-title">
+                        Gestion Mes Candidatures
+                    </div>
+
+                    <h:form id="addCandidature">
+                        <p:commandLink  class="btn btn-success pull-right"  value="New Candidature" onclick="PF('candidatureAddDialog').show();" ></p:commandLink>
+
+                    </h:form>
+                </div>
+
+                <div  class="content-wrapper">
+
+                    <h:form id="candidaturesList">
+                        <p:growl id="messages" autoUpdate="true" showDetail="true" sticky="true"/> 
+                        <p:dataTable style="font-size: x-small;" id="tbCandidatures" value="#{candidatureManagedBean.getMyListCandidatures(loginManagedBean.me)}" var="item" 
+                                     widgetVar="candidatureTable"
+                                     emptyMessage="No candidature found with given criteria" filteredValue="#{candidatureManagedBean.filteredCandidatures}">
+                            <f:facet name="header">
+                                <p:outputPanel>
+                                    <h:outputText value="Search all fields:" />
+                                    <p:inputText id="globalFilter" onkeyup="PF('candidatureTable').filter()" style="width:150px" placeholder="Enter keyword"/>
+                                </p:outputPanel>
+                            </f:facet>
+                            <p:column filterBy="#{item.candidatureid}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="N° Candidature"/>
+                                </f:facet>
+                                <h:outputText value="#{item.candidatureid}"/>
+                            </p:column>
+                            <p:column filterBy="#{item.datecandidature}"  filterMatchMode="contains" >
+                                <f:facet name="header">
+                                    <h:outputText value="Date Candidature"/>
+                                </f:facet>
+                                <h:outputText value="#{item.datecandidature}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column filterBy="#{item.numero.nom}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Nom"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numero.nom}"/>
+                            </p:column>
+                            <p:column filterBy="#{item.numero.prenom}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Prenom"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numero.prenom}"/>
+                            </p:column>
+                            <p:column filterBy="#{item.codeform.libelle}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Formation"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codeform.libelle}"/>
+                            </p:column>
+
+                            <p:column filterBy="#{item.etat}"  filterMatchMode="contains">
+
+                                <f:facet name="filter">
+                                    <p:selectOneMenu onchange="PF('candidatureTable').filter()" >
+                                        <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true" />
+                                        <f:selectItem itemLabel="Refused" itemValue="2" />
+                                        <f:selectItem itemLabel="Accepted" itemValue="1" />
+                                        <f:selectItem itemLabel="Waiting" itemValue="0" />
+                                    </p:selectOneMenu>
+
+                                </f:facet>
+                                <f:facet name="header">
+                                    <h:outputText value="Status"/>
+                                </f:facet>
+                                <h:outputText value="#{item.etat == 0 ? 'Waiting'  : item.etat == 1 ? 'Accepted'  : 'Refused' }" class="#{item.etat == 0 ? 'label label-warning'  : item.etat == 1 ? 'label label-success'  : 'label label-danger' }"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Candidatures"/>
+                                </f:facet>
+                                <p:commandLink id="showCandidature" class="btn btn-default fa fa-search" update=":dlgShowCandidature:candidatureShowDetail" oncomplete="PF('candidatureShowDialog').show();"  actionListener="#{candidatureManagedBean.setSelectedCandidature(item)}"></p:commandLink>
+
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+
+                </div>
+            </div>		
+        </div>
+
+        <!-- Add Dialog -->
+        <h:form id="dlgAddUser">
+            <p:dialog header="Add Candidature" widgetVar="candidatureAddDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel id="candidatureAddDetail" style="text-align:center; width: 400px;">
+                    <h:panelGrid  columns="2"   style="text-align:center; width: 400px;">
+
+                        <p:outputLabel value="Formation:" for="codeform" />
+                        <p:selectOneMenu id="codeform" value="#{candidatureManagedBean.candidature.codeform.codeform}" required="true" requiredMessage="The Codeform field is required.">
+                            <!-- TODO: update below reference to list of available items-->
+                            <f:selectItems value="#{formationManagedBean.listFormations}" var="formation" itemLabel="#{formation.libelle}" itemValue="#{formation.codeform}" />
+                        </p:selectOneMenu>
+
+                    </h:panelGrid>
+                    <p:commandLink  class="btn btn-success pull-right"  value="Save Candidature" oncomplete="PF('candidatureAddDialog').hide()" update=":candidaturesList:tbCandidatures :candidaturesList:messages :dlgAddUser:candidatureAddDetail" action="#{candidatureManagedBean.createCandidature(loginManagedBean.me)}"></p:commandLink>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+
+        <!-- Show Dialog -->
+        <h:form id="dlgShowCandidature">
+            <p:dialog header="Show Candidature" widgetVar="candidatureShowDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel id="candidatureShowDetail" style="text-align:center; width: 400px;">
+                    <h:panelGrid  columns="2"   style="text-align:center; width: 400px;">
+
+                        <h:outputText value="Nom:"/>
+                        <h:outputText value="#{candidatureManagedBean.selectedCandidature.numero.nom}" title="Nom"/>
+                        <h:outputText value="Prenom:"/>
+                        <h:outputText value="#{candidatureManagedBean.selectedCandidature.numero.prenom}" title="Prenom"/>
+                        <h:outputText value="Formation:"/>
+                        <h:outputText value="#{candidatureManagedBean.selectedCandidature.codeform.libelle}" title="Formation"/>
+                        <h:outputText value="N° Candidature:"/>
+                        <h:outputText value="#{candidatureManagedBean.selectedCandidature.candidatureid}" title="Candidatureid"/>
+                        <h:outputText value="Date Candidature:"/>
+                        <h:outputText value="#{candidatureManagedBean.selectedCandidature.datecandidature}" title="Datecandidature">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                        <h:outputText value="Status:"/>
+                        <h:outputText value="#{candidatureManagedBean.selectedCandidature.etat == 0 ? 'Waiting'  : candidatureManagedBean.selectedCandidature.etat == 1 ? 'Accepted'  : 'Refused' }" class="#{candidatureManagedBean.selectedCandidature.etat == 0 ? 'label label-warning'  : candidatureManagedBean.selectedCandidature.etat == 1 ? 'label label-success'  : 'label label-danger' }" title="Etat"/>
+
+                    </h:panelGrid>
+
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+    </h:body>
+</html>
+

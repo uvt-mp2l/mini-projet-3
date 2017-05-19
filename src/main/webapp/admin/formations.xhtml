@@ -1,0 +1,221 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ph="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>    
+        <link href="../assets/application.css" rel="stylesheet" type="text/css" />
+    </h:head>
+    <h:body id="dashboard">
+
+        <div id="wrapper">
+
+            <ui:include src="navigation.xhtml" /> 
+
+            <div id="content">
+
+                <div class="menubar">
+                    <div class="sidebar-toggler visible-xs">
+                        <i class="ion-navicon"></i>
+                    </div>
+
+                    <div class="page-title">
+                        Gestion Formations
+                    </div>
+
+                    <h:form id="addFormation">
+                        <p:commandLink  class="btn btn-success pull-right"  value="New Formation" onclick="PF('formationAddDialog').show();" ></p:commandLink>
+
+                    </h:form>
+                </div>
+
+                <div  class="content-wrapper">
+
+                    <h:form id="formationsList">
+                        <p:growl id="messages" autoUpdate="true" showDetail="true" sticky="true"/> 
+                        <p:dataTable style="font-size: x-small;" id="tbFormations" value="#{formationManagedBean.listFormations}" var="item" 
+                                     widgetVar="formationTable"
+                                     emptyMessage="No formation found with given criteria" filteredValue="#{formationManagedBean.filteredFormations}">
+                            <f:facet name="header">
+                                <p:outputPanel>
+                                    <h:outputText value="Search all fields:" />
+                                    <p:inputText id="globalFilter" onkeyup="PF('formationTable').filter()" style="width:150px" placeholder="Enter keyword"/>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <p:column filterBy="#{item.codeform}"  filterMatchMode="contains">
+
+                                <f:facet name="header">
+                                    <h:outputText value="Codeform"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codeform}"/>
+                            </p:column>
+                            <p:column filterBy="#{item.categorie}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Categorie"/>
+                                </f:facet>
+                                <h:outputText value="#{item.categorie}"/>
+                            </p:column>
+                            <p:column filterBy="#{item.libelle}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Libelle"/>
+                                </f:facet>
+                                <h:outputText value="#{item.libelle}"/>
+                            </p:column>
+                            <p:column filterBy="#{item.description}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Description"/>
+                                </f:facet>
+                                <h:outputText value="#{item.description}"/>
+                            </p:column>
+                            <p:column filterBy="#{item.datedebutcandidature}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Datedebutcandidature"/>
+                                </f:facet>
+                                <h:outputText value="#{item.datedebutcandidature}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column filterBy="#{item.datefincandidature}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Datefincandidature"/>
+                                </f:facet>
+                                <h:outputText value="#{item.datefincandidature}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column filterBy="#{item.prix}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Prix"/>
+                                </f:facet>
+                                <h:outputText value="#{item.prix}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Formations"/>
+                                </f:facet>
+                                <p:commandLink id="edFormation" class="btn btn-default fa fa-pencil" update=":dlgEditFormation:formationEditDetail" oncomplete="PF('formationEditDialog').show();"  actionListener="#{formationManagedBean.setSelectedFormation(item)}"></p:commandLink>
+                                <p:commandLink id="showFormation" class="btn btn-default fa fa-search" update=":dlgShowFormation:formationShowDetail" oncomplete="PF('formationShowDialog').show();"  actionListener="#{formationManagedBean.setSelectedFormation(item)}"></p:commandLink>
+                                <p:commandLink id="delFormation" class="btn btn-default fa fa-trash-o" update="tbFormations" actionListener="#{formationManagedBean.deleteFormation(item.codeform)}">
+                                    <p:confirm header="Confirmation" message="Are you sure to delete ?" icon="ui-icon-alert" />
+                                </p:commandLink>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+
+                </div>
+            </div>		
+        </div>
+
+        <!-- Add Dialog -->
+        <h:form id="dlgAddFormation">
+            <p:dialog header="Add Formation" widgetVar="formationAddDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel id="formationAddDetail" style="text-align:center; width: 400px;">
+                    <h:panelGrid  columns="2"   style="text-align:center; width: 400px;">
+                        <p:outputLabel value="Categorie:" for="categorie" />
+                        <p:selectOneMenu id="categorie" value="#{formationManagedBean.formation.categorie}" required="true" requiredMessage="The Categorie field is required.">
+                            <!-- TODO: update below reference to list of available items-->
+                            <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="false" />
+                            <f:selectItem itemLabel="Mastere" itemValue="mastere" />
+                            <f:selectItem itemLabel="Licence" itemValue="licence" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Libelle:" for="libelle" />
+                        <p:inputText id="libelle" value="#{formationManagedBean.formation.libelle}" title="Libelle" required="true" requiredMessage="The Libelle field is required."/>
+                        <p:outputLabel value="Description:" for="description" />
+                        <p:inputText id="description" value="#{formationManagedBean.formation.description}" title="Description" required="true" requiredMessage="The Description field is required."/>
+                        <p:outputLabel value="Datedebutcandidature:" for="datedebutcandidature" />
+                        <p:inputText id="datedebutcandidature" value="#{formationManagedBean.formation.datedebutcandidature}" title="Datedebutcandidature" required="true" requiredMessage="The Datedebutcandidature field is required.">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </p:inputText>
+                        <p:outputLabel value="Datefincandidature:" for="datefincandidature" />
+                        <p:inputText id="datefincandidature" value="#{formationManagedBean.formation.datefincandidature}" title="Datefincandidature" required="true" requiredMessage="The Datefincandidature field is required.">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </p:inputText>
+                        <p:outputLabel value="Prix:" for="prix" />
+                        <p:inputText id="prix" value="#{formationManagedBean.formation.prix}" title="Prix" />
+
+                    </h:panelGrid>
+                    <p:commandLink  class="btn btn-success pull-right"  value="Save Formation" oncomplete="PF('formationAddDialog').hide()" update=":formationsList:tbFormations :formationsList:messages :dlgAddFormation:formationAddDetail" action="#{formationManagedBean.createFormation()}"></p:commandLink>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+        <!-- Edit Dialog -->
+        <h:form id="dlgEditFormation">
+            <p:dialog header="Edit Formation" widgetVar="formationEditDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel id="formationEditDetail" style="text-align:center; width: 400px;">
+                    <h:panelGrid  columns="2"   style="text-align:center; width: 400px;">
+
+                        <p:outputLabel value="Codeform:" for="codeform" />
+                        <p:inputText id="codeform" disabled="true" value="#{formationManagedBean.selectedFormation.codeform}" title="Codeform" required="true" requiredMessage="The Codeform field is required."/>
+                        <p:outputLabel value="Categorie:" for="categorie" />
+                        <p:selectOneMenu id="categorie" value="#{formationManagedBean.selectedFormation.categorie}" required="true" requiredMessage="The Categorie field is required.">
+                            <!-- TODO: update below reference to list of available items-->
+                            <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="false" />
+                            <f:selectItem itemLabel="Mastere" itemValue="mastere" />
+                            <f:selectItem itemLabel="Licence" itemValue="licence" />
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Libelle:" for="libelle" />
+                        <p:inputText id="libelle" value="#{formationManagedBean.selectedFormation.libelle}" title="Libelle" required="true" requiredMessage="The Libelle field is required."/>
+                        <p:outputLabel value="Description:" for="description" />
+                        <p:inputText id="description" value="#{formationManagedBean.selectedFormation.description}" title="Description" required="true" requiredMessage="The Description field is required."/>
+                        <p:outputLabel value="Datedebutcandidature:" for="datedebutcandidature" />
+                        <p:inputText id="datedebutcandidature" value="#{formationManagedBean.selectedFormation.datedebutcandidature}" title="Datedebutcandidature" required="true" requiredMessage="The Datedebutcandidature field is required.">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </p:inputText>
+                        <p:outputLabel value="Datefincandidature:" for="datefincandidature" />
+                        <p:inputText id="datefincandidature" value="#{formationManagedBean.selectedFormation.datefincandidature}" title="Datefincandidature" required="true" requiredMessage="The Datefincandidature field is required.">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </p:inputText>
+                        <p:outputLabel value="Prix:" for="prix" />
+                        <p:inputText id="prix" value="#{formationManagedBean.selectedFormation.prix}" title="Prix" />
+
+                    </h:panelGrid>
+                    <p:commandLink  class="btn btn-success pull-right"  value="Edit Formation" oncomplete="PF('formationEditDialog').hide()" update=":formationsList:tbFormations :formationsList:messages" action="#{formationManagedBean.editFormation()}"></p:commandLink>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+        <!-- Show Dialog -->
+        <h:form id="dlgShowFormation">
+            <p:dialog header="Show Formation" widgetVar="formationShowDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel id="formationShowDetail" style="text-align:center; width: 400px;">
+                    <h:panelGrid  columns="2"   style="text-align:center; width: 400px;">
+
+                        <h:outputText value="Codeform:"/>
+                        <h:outputText value="#{formationManagedBean.selectedFormation.codeform}" title="Codeform"/>
+                        <h:outputText value="Categorie:"/>
+                        <h:outputText value="#{formationManagedBean.selectedFormation.categorie}" title="Categorie"/>
+                        <h:outputText value="Libelle:"/>
+                        <h:outputText value="#{formationManagedBean.selectedFormation.libelle}" title="Libelle"/>
+                        <h:outputText value="Description:"/>
+                        <h:outputText value="#{formationManagedBean.selectedFormation.description}" title="Description"/>
+                        <h:outputText value="Datedebutcandidature:"/>
+                        <h:outputText value="#{formationManagedBean.selectedFormation.datedebutcandidature}" title="Datedebutcandidature">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                        <h:outputText value="Datefincandidature:"/>
+                        <h:outputText value="#{formationManagedBean.selectedFormation.datefincandidature}" title="Datefincandidature">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                        <h:outputText value="Prix:"/>
+                        <h:outputText value="#{formationManagedBean.selectedFormation.prix}" title="Prix"/>
+
+                    </h:panelGrid>
+
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+        <h:form>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+        </h:form>
+    </h:body>
+</html>
+

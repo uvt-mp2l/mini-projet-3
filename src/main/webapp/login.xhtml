@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ph="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <title>Gestion Inscription - Authentication</title>
+        <meta http-equiv="refresh" content="#{session.maxInactiveInterval};URL=/GestionInscription" />
+
+
+
+        <!--Fonts-->
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300" rel="stylesheet" type="text/css"/>
+
+        <!--Template styles-->
+        <link  href="assets/application.css" rel="stylesheet" type="text/css"  />
+    </h:head>
+    <h:body id="signin" >
+        <div class="bg clear" style="height: 645px !important;">
+
+            <a href="#" class="logo">
+            </a>
+
+            <h3>Bienvenu sur l'application - Gestion Inscription </h3>
+
+            <div class="content">
+                <form method="post" action="j_spring_security_check">
+                    <div class="fields">
+                        <strong>Username</strong>
+                        <input class="form-control" name="j_username" type="text" placeholder="Username" />
+                    </div>
+                    <div class="fields">
+                        <strong>Password</strong>
+                        <input class="form-control" name="j_password" type="password" placeholder="Password" />
+                    </div>
+
+                    <div class="actions">
+                        <input type="submit" class="btn btn-danger btn-block" value="Login"/>
+                    </div>
+                </form>
+                <div class="info">
+                    <center>
+                        <c:if test="${param.error==true}">
+                            <span style="font-size: 15px;" class="label label-danger">Invalid username or password!!</span>
+
+                        </c:if>
+                        <c:if test="${param.logout==true}">
+                            <span style="font-size: 15px;" class="label label-success">Logged out successfully!</span>
+                        </c:if>
+                    </center>
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </h:body>
+</html>
+

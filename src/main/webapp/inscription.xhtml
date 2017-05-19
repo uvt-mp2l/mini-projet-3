@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ph="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head>
+        <title>Gestion Inscription - Inscription</title>
+        <meta http-equiv="refresh" content="#{session.maxInactiveInterval};URL=/GestionInscription" />
+
+
+
+        <!--Fonts-->
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,400,600,700,300" rel="stylesheet" type="text/css"/>
+
+        <!--Template styles-->
+        <link  href="assets/application.css" rel="stylesheet" type="text/css"  />
+    </h:head>
+    <h:body id="signin" style="background-color: #F2F5F8;">
+        <div class="bg clear" style="height: 645px !important;">
+
+            <h3 style="margin-top:5px !important;">Veuillez inscrire vos informations ci-dessous pour continuer</h3>
+
+            <div class="content">
+                <h:form id="inscriptionfrm">
+                    <div class="row">
+                        <div class="fields col-xs-12 col-sm-6 col-lg-6">
+                            <strong><p:outputLabel value="Numero:" for="numero" /></strong>
+                            <p:inputText class="form-control" id="numero" value="#{etudiantManagedBean.etudiant.numero}" placeholder="Numero" title="Numero" required="true" requiredMessage="The Numero field is required."/>
+                        </div>
+                        <div class="fields col-xs-12 col-sm-6 col-lg-6">
+                            <strong><p:outputLabel value="Nom:" for="nom" /></strong>
+                            <p:inputText class="form-control" id="nom" value="#{etudiantManagedBean.etudiant.nom}" placeholder="Nom" title="Nom" required="true" requiredMessage="The Nom field is required."/>
+                        </div>
+                        <div class="fields col-xs-12 col-sm-6 col-lg-6">
+                            <strong><p:outputLabel value="Prenom:" for="prenom" /></strong>
+                            <p:inputText class="form-control" id="prenom" value="#{etudiantManagedBean.etudiant.prenom}" placeholder="Prenom" title="Prenom" required="true" requiredMessage="The Prenom field is required."/>
+                        </div>
+                        <div class="fields col-xs-12 col-sm-6 col-lg-6">
+                            <strong><p:outputLabel value="Date Naissance:" for="datenais" /></strong>
+                            <p:inputText class="form-control" id="datenais" value="#{etudiantManagedBean.etudiant.datenais}" placeholder="Date Naissance" title="Datenais" required="true" requiredMessage="The Datenais field is required."/>
+                        </div>
+                        <div class="fields col-xs-12 col-sm-6 col-lg-6">
+                            <strong><p:outputLabel value="Lieunais:" for="lieunais" /></strong>
+                            <p:inputText class="form-control" id="lieunais" value="#{etudiantManagedBean.etudiant.lieunais}" placeholder="Lieunais" title="Lieunais" required="true" requiredMessage="The Lieunais field is required."/>
+                        </div>
+                        <div class="fields col-xs-12 col-sm-6 col-lg-6">
+                            <strong><p:outputLabel value="Nationalite:" for="nationalite" /></strong>
+                            <p:inputText class="form-control" id="nationalite" value="#{etudiantManagedBean.etudiant.nationalite}" placeholder="Nationalite" title="Nationalite" required="true" requiredMessage="The Nationalite field is required."/>
+                        </div>
+                        <div class="fields col-xs-12 col-sm-6 col-lg-6">
+                            <strong><p:outputLabel value="Adresse:" for="adresse" /></strong>
+                            <p:inputText class="form-control" id="adresse" value="#{etudiantManagedBean.etudiant.adresse}" placeholder="Adresse" title="Adresse" required="true" requiredMessage="The Adresse field is required."/>
+                        </div>
+                        <div class="fields col-xs-12 col-sm-6 col-lg-6">
+                            <strong><p:outputLabel value="Email Adresse:" for="emailadresse" /></strong>
+                            <p:inputText class="form-control" id="emailadresse" value="#{etudiantManagedBean.emailadresse}" placeholder="Email Adresse" title="Email Adresse" required="true" requiredMessage="The Email Adresse field is required."/>
+                        </div>
+                        <div class="fields col-xs-12 col-sm-6 col-lg-6">
+                            <strong><p:outputLabel value="Password:" for="password" /></strong>
+                            <p:inputText class="form-control" id="password" value="#{etudiantManagedBean.password}" placeholder="Password" title="Password" required="true" requiredMessage="The Password field is required."/>
+                        </div>
+                    </div>
+                    <div class="">
+                        <p:commandLink  class="btn btn-success btn-block"  value="S'inscrire" update="inscriptionfrm" action="#{etudiantManagedBean.createEtudiant()}"></p:commandLink>
+                    </div>
+                </h:form>
+            </div>
+
+        </div>
+
+
+    </h:body>
+</html>
+

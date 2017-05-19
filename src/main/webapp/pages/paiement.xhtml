@@ -1,0 +1,151 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ph="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>    
+        <link href="../assets/application.css" rel="stylesheet" type="text/css" />
+    </h:head>
+    <h:body id="dashboard">
+
+        <div id="wrapper">
+
+            <ui:include src="navigation.xhtml" /> 
+
+            <div id="content">
+
+                <div class="menubar">
+                    <div class="sidebar-toggler visible-xs">
+                        <i class="ion-navicon"></i>
+                    </div>
+
+                    <div class="page-title">
+                        Gestion Paiements
+                    </div>
+                </div>
+
+                <div  class="content-wrapper">
+
+                    <h:form id="paiementsList">
+                        <p:growl id="messages" autoUpdate="true" showDetail="true" sticky="true"/> 
+                        <p:dataTable style="font-size: x-small;" id="tbPaiements" value="#{paiementManagedBean.getMyListPaiements(loginManagedBean.me)}" var="item" 
+                                     widgetVar="paiementTable"
+                                     emptyMessage="No paiement found with given criteria" filteredValue="#{paiementManagedBean.filteredPaiements}">
+                            <f:facet name="header">
+                                <p:outputPanel>
+                                    <h:outputText value="Search all fields:" />
+                                    <p:inputText id="globalFilter" onkeyup="PF('paiementTable').filter()" style="width:150px" placeholder="Enter keyword"/>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <p:column filterBy="#{item.numeroRecu}"  filterMatchMode="contains">
+
+                                <f:facet name="header">
+                                    <h:outputText value="NumeroRecu"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numeroRecu}"/>
+                            </p:column>
+                            <p:column filterBy="#{item.montant}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Montant"/>
+                                </f:facet>
+                                <h:outputText value="#{item.montant}"/>
+                            </p:column>
+                            <p:column filterBy="#{item.mois}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Mois"/>
+                                </f:facet>
+                                <h:outputText value="#{item.mois}"/>
+                            </p:column>
+                            <p:column filterBy="#{item.date}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Date"/>
+                                </f:facet>
+                                <h:outputText value="#{item.date}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                </h:outputText>
+                            </p:column>
+                            <p:column filterBy="#{item.etat}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Etat"/>
+                                </f:facet>
+                                <h:outputText value="#{item.etat}"/>
+                            </p:column>
+                            <p:column filterBy="#{item.numero.nom} #{item.numero.prenom}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Numero"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numero.nom} #{item.numero.prenom}"/>
+                            </p:column>
+                            <p:column filterBy="#{item.codeform.libelle}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Codeform"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codeform.libelle}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Paiements"/>
+                                </f:facet>
+                                <p:commandLink id="edPaiement" class="btn btn-default fa fa-pencil" update=":dlgEditPaiement:paiementEditDetail" oncomplete="PF('paiementEditDialog').show();"  actionListener="#{paiementManagedBean.setSelectedPaiement(item)}"></p:commandLink>
+                                <p:commandLink id="showPaiement" class="btn btn-default fa fa-search" update=":dlgShowPaiement:paiementShowDetail" oncomplete="PF('paiementShowDialog').show();"  actionListener="#{paiementManagedBean.setSelectedPaiement(item)}"></p:commandLink>
+
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+
+                </div>
+            </div>		
+        </div>
+
+        <!-- Edit Dialog -->
+        <h:form id="dlgEditPaiement">
+            <p:dialog header="Edit Paiement" widgetVar="paiementEditDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel id="paiementEditDetail" style="text-align:center; width: 400px;">
+                    <h:panelGrid  columns="2"   style="text-align:center; width: 400px;">
+                        <p:outputLabel value="Etat:" for="etat" />
+                        <p:selectOneMenu id="etat" value="#{paiementManagedBean.selectedPaiement.etat}" required="true" requiredMessage="The Etat field is required." style="width:125px">
+                            <f:selectItem itemLabel="Payer" itemValue="1" />
+                            <f:selectItem itemLabel="Non Payer" itemValue="0" />
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                    <p:commandLink  class="btn btn-success pull-right"  value="Edit Paiement" oncomplete="PF('paiementEditDialog').hide()" update=":paiementsList:tbPaiements :paiementsList:messages" action="#{paiementManagedBean.editPaiement()}"></p:commandLink>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+        <!-- Show Dialog -->
+        <h:form id="dlgShowPaiement">
+            <p:dialog header="Show Paiement" widgetVar="paiementShowDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel id="paiementShowDetail" style="text-align:center; width: 400px;">
+                    <h:panelGrid  columns="2"   style="text-align:center; width: 400px;">
+
+                        <h:outputText value="NumeroRecu:"/>
+                        <h:outputText value="#{paiementManagedBean.selectedPaiement.numeroRecu}" title="NumeroRecu"/>
+                        <h:outputText value="Montant:"/>
+                        <h:outputText value="#{paiementManagedBean.selectedPaiement.montant}" title="Montant"/>
+                        <h:outputText value="Mois:"/>
+                        <h:outputText value="#{paiementManagedBean.selectedPaiement.mois}" title="Mois"/>
+                        <h:outputText value="Date:"/>
+                        <h:outputText value="#{paiementManagedBean.selectedPaiement.date}" title="Date">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                        <h:outputText value="Etat:"/>
+                        <h:outputText value="#{paiementManagedBean.selectedPaiement.etat}" title="Etat"/>
+                        <h:outputText value="Numero:"/>
+                        <h:outputText value="#{paiementManagedBean.selectedPaiement.numero}" title="Numero"/>
+                        <h:outputText value="Codeform:"/>
+                        <h:outputText value="#{paiementManagedBean.selectedPaiement.codeform}" title="Codeform"/>
+
+                    </h:panelGrid>
+
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+    </h:body>
+</html>
+

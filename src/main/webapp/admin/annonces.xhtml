@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ph="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>    
+        <link href="../assets/application.css" rel="stylesheet" type="text/css" />
+    </h:head>
+    <h:body id="dashboard">
+
+        <div id="wrapper">
+
+            <ui:include src="navigation.xhtml" /> 
+
+            <div id="content">
+
+                <div class="menubar">
+                    <div class="sidebar-toggler visible-xs">
+                        <i class="ion-navicon"></i>
+                    </div>
+
+                    <div class="page-title">
+                        Gestion Annonces
+                    </div>
+
+                    <h:form id="addAnnonce">
+                        <p:commandLink  class="btn btn-success pull-right"  value="New Annonce" onclick="PF('annonceAddDialog').show();" ></p:commandLink>
+
+                    </h:form>
+                </div>
+
+                <div  class="content-wrapper">
+
+                    <h:form id="annoncesList">
+                        <p:growl id="messages" autoUpdate="true" showDetail="true" sticky="true"/> 
+                        <p:dataTable style="font-size: x-small;" id="tbAnnonces" value="#{annonceManagedBean.listAnnonces}" var="item" 
+                                     widgetVar="annonceTable"
+                                     emptyMessage="No annonce found with given criteria" filteredValue="#{annonceManagedBean.filteredAnnonces}">
+                            <f:facet name="header">
+                                <p:outputPanel>
+                                    <h:outputText value="Search all fields:" />
+                                    <p:inputText id="globalFilter" onkeyup="PF('annonceTable').filter()" style="width:150px" placeholder="Enter keyword"/>
+                                </p:outputPanel>
+                            </f:facet>
+
+                            <p:column filterBy="#{item.codeannonce}"  filterMatchMode="contains">
+
+                                <f:facet name="header">
+                                    <h:outputText value="Codeannonce"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codeannonce}"/>
+                            </p:column>
+                            <p:column filterBy="#{item.libelle}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Libelle"/>
+                                </f:facet>
+                                <h:outputText value="#{item.libelle}"/>
+                            </p:column>
+                            <p:column filterBy="#{item.description}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Description"/>
+                                </f:facet>
+                                <h:outputText value="#{item.description}"/>
+                            </p:column>
+                            <p:column filterBy="#{item.dateannonce}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Dateannonce"/>
+                                </f:facet>
+                                <h:outputText value="#{item.dateannonce}">
+                                    <f:convertDateTime pattern="MM/dd/yyyy" />
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Annonces"/>
+                                </f:facet>
+                                <p:commandLink id="edAnnonce" class="btn btn-default fa fa-pencil" update=":dlgEditAnnonce:annonceEditDetail" oncomplete="PF('annonceEditDialog').show();"  actionListener="#{annonceManagedBean.setSelectedAnnonce(item)}"></p:commandLink>
+                                <p:commandLink id="showAnnonce" class="btn btn-default fa fa-search" update=":dlgShowAnnonce:annonceShowDetail" oncomplete="PF('annonceShowDialog').show();"  actionListener="#{annonceManagedBean.setSelectedAnnonce(item)}"></p:commandLink>
+                                <p:commandLink id="delAnnonce" class="btn btn-default fa fa-trash-o" update="tbAnnonces" actionListener="#{annonceManagedBean.deleteAnnonce(item.codeannonce)}">
+                                    <p:confirm header="Confirmation" message="Are you sure to delete ?" icon="ui-icon-alert" />
+                                </p:commandLink>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+
+                </div>
+            </div>		
+        </div>
+
+        <!-- Add Dialog -->
+        <h:form id="dlgAddAnnonce">
+            <p:dialog header="Add Annonce" widgetVar="annonceAddDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel id="annonceAddDetail" style="text-align:center; width: 600px;">
+                    <h:panelGrid  columns="2"   style="text-align:center; width: 600px;">
+
+                        <p:outputLabel value="Libelle:" for="libelle" />
+                        <p:inputText id="libelle" value="#{annonceManagedBean.annonce.libelle}" style="width: 380px !important;" title="Libelle" required="true" requiredMessage="The Libelle field is required."/>
+                        <p:outputLabel value="Description:" for="description" />
+                        <p:inputTextarea id="description" autoResize="false" rows="10" cols="33" style="max-height: 150px !important; max-width: 380px !important; overflow:auto;" value="#{annonceManagedBean.annonce.description}" title="Description" required="true" requiredMessage="The Description field is required."/>
+                        <p:outputLabel value="Dateannonce:" for="dateannonce" />
+                        <p:calendar id="dateannonce" value="#{annonceManagedBean.annonce.dateannonce}" pattern="MM/dd/yyyy" style="width: 380px !important;" title="Dateannonce" required="true" requiredMessage="The Dateannonce field is required.">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </p:calendar>
+
+                    </h:panelGrid>
+                    <p:commandLink  class="btn btn-success pull-right"  value="Save Annonce" oncomplete="PF('annonceAddDialog').hide()" update=":annoncesList:tbAnnonces :annoncesList:messages :dlgAddAnnonce:annonceAddDetail" action="#{annonceManagedBean.createAnnonce()}"></p:commandLink>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+        <!-- Edit Dialog -->
+        <h:form id="dlgEditAnnonce">
+            <p:dialog header="Edit Annonce" widgetVar="annonceEditDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel id="annonceEditDetail" style="text-align:center; width: 600px;">
+                    <h:panelGrid  columns="2"   style="text-align:center; width: 600px;">
+
+                        <p:outputLabel value="Codeannonce:" for="codeannonce" />
+                        <p:inputText id="codeannonce" style="width: 380px !important;" disabled="true" value="#{annonceManagedBean.selectedAnnonce.codeannonce}" title="Codeannonce" required="true" requiredMessage="The Codeannonce field is required."/>
+                        <p:outputLabel value="Libelle:" for="libelle" />
+                        <p:inputText id="libelle" style="width: 380px !important;" value="#{annonceManagedBean.selectedAnnonce.libelle}" title="Libelle" required="true" requiredMessage="The Libelle field is required."/>
+                        <p:outputLabel value="Description:" for="description" />
+                        <p:inputTextarea id="description" autoResize="false" rows="10" cols="33" style="max-height: 150px !important; max-width: 380px !important; overflow:auto;" value="#{annonceManagedBean.selectedAnnonce.description}" title="Description" required="true" requiredMessage="The Description field is required."/>
+                        <p:outputLabel value="Dateannonce:" for="dateannonce" />
+                        <p:inputText id="dateannonce" style="width: 380px !important;" value="#{annonceManagedBean.selectedAnnonce.dateannonce}" title="Dateannonce" required="true" requiredMessage="The Dateannonce field is required.">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </p:inputText>
+
+                    </h:panelGrid>
+                    <p:commandLink  class="btn btn-success pull-right"  value="Edit Annonce" oncomplete="PF('annonceEditDialog').hide()" update=":annoncesList:tbAnnonces :annoncesList:messages" action="#{annonceManagedBean.editAnnonce()}"></p:commandLink>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+        <!-- Show Dialog -->
+        <h:form id="dlgShowAnnonce">
+            <p:dialog header="Show Annonce" widgetVar="annonceShowDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" >
+                <p:outputPanel id="annonceShowDetail" style="text-align:center; width: 600px;">
+                    <h:panelGrid  columns="2"   style="text-align:center; width: 600px;">
+                        <h:outputText value="Codeannonce:"/>
+                        <h:outputText value="#{annonceManagedBean.selectedAnnonce.codeannonce}" title="Codeannonce"/>
+                        <h:outputText value="Libelle:"/>
+                        <h:outputText value="#{annonceManagedBean.selectedAnnonce.libelle}" title="Libelle"/>
+                        <h:outputText value="Description:"/>
+                        <h:outputText value="#{annonceManagedBean.selectedAnnonce.description}" title="Description"/>
+                        <h:outputText value="Dateannonce:"/>
+                        <h:outputText value="#{annonceManagedBean.selectedAnnonce.dateannonce}" title="Dateannonce">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                    </h:panelGrid>
+
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+        <h:form>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+            </p:confirmDialog>
+        </h:form>
+    </h:body>
+</html>
+
