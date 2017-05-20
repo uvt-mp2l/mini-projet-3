@@ -124,9 +124,9 @@
                         <p:outputLabel value="Description:" for="description" />
                         <p:inputTextarea id="description" autoResize="false" rows="10" cols="33" style="max-height: 150px !important; max-width: 380px !important; overflow:auto;" value="#{annonceManagedBean.selectedAnnonce.description}" title="Description" required="true" requiredMessage="The Description field is required."/>
                         <p:outputLabel value="Dateannonce:" for="dateannonce" />
-                        <p:inputText id="dateannonce" style="width: 380px !important;" value="#{annonceManagedBean.selectedAnnonce.dateannonce}" title="Dateannonce" required="true" requiredMessage="The Dateannonce field is required.">
+                        <p:calendar id="dateannonce" value="#{annonceManagedBean.selectedAnnonce.dateannonce}" pattern="MM/dd/yyyy" style="width: 380px !important;" title="Dateannonce" required="true" requiredMessage="The Dateannonce field is required.">
                             <f:convertDateTime pattern="MM/dd/yyyy" />
-                        </p:inputText>
+                        </p:calendar>
 
                     </h:panelGrid>
                     <p:commandLink  class="btn btn-success pull-right"  value="Edit Annonce" oncomplete="PF('annonceEditDialog').hide()" update=":annoncesList:tbAnnonces :annoncesList:messages" action="#{annonceManagedBean.editAnnonce()}"></p:commandLink>
