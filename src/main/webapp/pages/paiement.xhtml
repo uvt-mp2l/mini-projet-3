@@ -22,7 +22,7 @@
                     </div>
 
                     <div class="page-title">
-                        Gestion Paiements
+                        Gestion Paiement
                     </div>
                 </div>
 
@@ -47,6 +47,18 @@
                                 </f:facet>
                                 <h:outputText value="#{item.numeroRecu}"/>
                             </p:column>
+                            <p:column filterBy="#{item.numero.nom} #{item.numero.prenom}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Etudiant"/>
+                                </f:facet>
+                                <h:outputText value="#{item.numero.nom} #{item.numero.prenom}"/>
+                            </p:column>
+                            <p:column filterBy="#{item.codeform.libelle}"  filterMatchMode="contains">
+                                <f:facet name="header">
+                                    <h:outputText value="Formation"/>
+                                </f:facet>
+                                <h:outputText value="#{item.codeform.libelle}"/>
+                            </p:column>
                             <p:column filterBy="#{item.montant}"  filterMatchMode="contains">
                                 <f:facet name="header">
                                     <h:outputText value="Montant"/>
@@ -68,22 +80,18 @@
                                 </h:outputText>
                             </p:column>
                             <p:column filterBy="#{item.etat}"  filterMatchMode="contains">
+                                <f:facet name="filter">
+                                    <p:selectOneMenu onchange="PF('paiementTable').filter()" >
+                                        <f:selectItem itemLabel="Select One" itemValue="#{null}" noSelectionOption="true" />
+                                        <f:selectItem itemLabel="Payé" itemValue="1" />
+                                        <f:selectItem itemLabel="Non Payé" itemValue="0" />
+                                    </p:selectOneMenu>
+
+                                </f:facet>
                                 <f:facet name="header">
                                     <h:outputText value="Etat"/>
                                 </f:facet>
-                                <h:outputText value="#{item.etat}"/>
-                            </p:column>
-                            <p:column filterBy="#{item.numero.nom} #{item.numero.prenom}"  filterMatchMode="contains">
-                                <f:facet name="header">
-                                    <h:outputText value="Numero"/>
-                                </f:facet>
-                                <h:outputText value="#{item.numero.nom} #{item.numero.prenom}"/>
-                            </p:column>
-                            <p:column filterBy="#{item.codeform.libelle}"  filterMatchMode="contains">
-                                <f:facet name="header">
-                                    <h:outputText value="Codeform"/>
-                                </f:facet>
-                                <h:outputText value="#{item.codeform.libelle}"/>
+                                <h:outputText value="#{item.etat == 0 ? 'Non Payé'  :  'Payé' }" class="#{item.etat == 0 ? 'label label-warning'  : 'label label-success'   }"/>
                             </p:column>
 
                             <p:column>
@@ -107,7 +115,7 @@
                 <p:outputPanel id="paiementEditDetail" style="text-align:center; width: 400px;">
                     <h:panelGrid  columns="2"   style="text-align:center; width: 400px;">
                         <p:outputLabel value="Etat:" for="etat" />
-                        <p:selectOneMenu id="etat" value="#{paiementManagedBean.selectedPaiement.etat}" required="true" requiredMessage="The Etat field is required." style="width:125px">
+                        <p:selectOneMenu id="etat" disabled="#{paiementManagedBean.selectedPaiement.etat == 0 ? false  : true }" value="#{paiementManagedBean.selectedPaiement.etat}" required="true" requiredMessage="The Etat field is required." style="width:125px">
                             <f:selectItem itemLabel="Payer" itemValue="1" />
                             <f:selectItem itemLabel="Non Payer" itemValue="0" />
                         </p:selectOneMenu>
@@ -125,6 +133,10 @@
 
                         <h:outputText value="NumeroRecu:"/>
                         <h:outputText value="#{paiementManagedBean.selectedPaiement.numeroRecu}" title="NumeroRecu"/>
+                        <h:outputText value="Etudiant"/>
+                        <h:outputText value="#{paiementManagedBean.selectedPaiement.numero.nom} #{paiementManagedBean.selectedPaiement.numero.prenom}" title="Numero"/>
+                        <h:outputText value="Formation:"/>
+                        <h:outputText value="#{paiementManagedBean.selectedPaiement.codeform.libelle}" title="Codeform"/>
                         <h:outputText value="Montant:"/>
                         <h:outputText value="#{paiementManagedBean.selectedPaiement.montant}" title="Montant"/>
                         <h:outputText value="Mois:"/>
@@ -134,12 +146,8 @@
                             <f:convertDateTime pattern="MM/dd/yyyy" />
                         </h:outputText>
                         <h:outputText value="Etat:"/>
-                        <h:outputText value="#{paiementManagedBean.selectedPaiement.etat}" title="Etat"/>
-                        <h:outputText value="Numero:"/>
-                        <h:outputText value="#{paiementManagedBean.selectedPaiement.numero}" title="Numero"/>
-                        <h:outputText value="Codeform:"/>
-                        <h:outputText value="#{paiementManagedBean.selectedPaiement.codeform}" title="Codeform"/>
-
+                        <h:outputText value="#{paiementManagedBean.selectedPaiement.etat == 0 ? 'Non Payé'  :  'Payé' }" class="#{paiementManagedBean.selectedPaiement.etat == 0 ? 'label label-warning'  : 'label label-success'   }"/>
+                        
                     </h:panelGrid>
 
                 </p:outputPanel>
